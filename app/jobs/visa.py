@@ -37,7 +37,7 @@ class VisaDecisionJob(Job):
                 newName = fileName.split(".")[0]+'.xlsx'
                 save_data(staticFolder+'/'+newName,get_data("test.ods"))
                 host = os.environ['HOST']
-                self.logger.info("New File detected, Download it at "+host+'/'+newName)
+                self.logger.info("New File detected, Download it at http://"+host+'/'+newName)
         self.dumpContext()
 
 
