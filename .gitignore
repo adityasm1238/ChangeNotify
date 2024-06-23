@@ -1,0 +1,9 @@
+**/__pycache__
+test.py
+.env
+*.db
+**/*.log
+.DS_Store
+static/
+context/
+venv/
