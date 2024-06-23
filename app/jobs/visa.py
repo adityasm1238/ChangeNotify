@@ -3,6 +3,7 @@ import cloudscraper
 import os
 from pyexcel_ods3 import get_data
 from pyexcel_xlsx import save_data
+import json
 
 from app.jobs.base import Job
 
@@ -35,10 +36,24 @@ class VisaDecisionJob(Job):
                 with open(staticFolder+'/'+fileName, "wb") as f: # opening a file handler to create new file 
                     f.write(resp.content) # writing content to file
                 newName = fileName.split(".")[0]+'.xlsx'
-                save_data(staticFolder+'/'+newName,get_data(staticFolder+'/'+fileName))
+                ods = get_data(staticFolder+'/'+fileName)
+                status = self.findStatus(ods)
+                r = "Coudnt find application number"
+                if status != None:
+                    r = "Status: "+status
+                save_data(staticFolder+'/'+newName,ods)
                 host = os.environ['HOST']
-                self.logger.info("New File detected, Download it at http://"+host+'/'+newName)
+                self.logger.info("New File detected,"+r+" , Download it at http://"+host+'/'+newName)
         self.dumpContext()
+    
+    def findStatus(self, ods):
+        ds = json.loads(json.dumps(ods))
+        s = ds['ApplicationDecisionReport']
+        for i in s:
+            if len(i)>=3:
+                if isinstance(i[2], int) and i[2] == os.environ['APPLICATION_NO']:
+                    return i[3]
+        return None
 
 
 
