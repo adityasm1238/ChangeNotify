@@ -19,5 +19,5 @@ config_logger(
             }
         )
 jr = JobRunner()
-jr.submit(VisaDecisionJob, 60)
+jr.submit(VisaDecisionJob, 600)
 jr.run()
