@@ -23,7 +23,6 @@ class Job(threading.Thread):
     
     def loadContext(self) -> None:
         contextPath = os.environ['CONTEXT_DIRECTORY']
-        print(contextPath)
         if os.path.isfile(contextPath+self.JOB_NAME+'.context'):
             with open(contextPath+self.JOB_NAME+'.context') as f:
                 self.context = json.load(f)
