@@ -8,13 +8,9 @@ class DiscordHandler(logging.handlers.HTTPHandler):
 
     def mapLogRecord(self, record: logging.LogRecord) -> dict:
         self.format(record)
-        return {
-            'embeds': [
-                {
-                    'title': record.levelname,
-                    'description': record.message[:2048],
-                    "color": self.getColor(record.levelname),
-                    "fields": [
+        extraUrl = record.__dict__.get("url")
+        result = record.__dict__.get("result")
+        fields = [
                         {
                             "name": "Logger Name",
                             "value": record.name,
@@ -25,9 +21,25 @@ class DiscordHandler(logging.handlers.HTTPHandler):
                             "value": record.asctime,
                             "inline": True
                         }
-                    ],
-                },
-            ]
+                    ]
+        if extraUrl != None:
+            fields.append({
+                "name": "Download At",
+                "value": extraUrl
+            })
+        
+        if result != None:
+            fields.append({
+                "name": "Status",
+                "value": result
+            })
+        return {
+            'embeds': [{
+                    'title': record.levelname,
+                    'description': record.message[:2048],
+                    "color": self.getColor(record.levelname),
+                    "fields": fields,
+                }]
         }
 
     def getColor(self, level: str) -> int:

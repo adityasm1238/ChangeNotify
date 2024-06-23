@@ -39,12 +39,12 @@ class VisaDecisionJob(Job):
                     newName = fileName.split(".")[0]+'.xlsx'
                     ods = get_data(staticFolder+'/'+fileName)
                     status = self.findStatus(ods)
-                    r = "Coudnt find application number"
+                    r = "Coudnt find application number "+ str(os.environ['APPLICATION_NO'])
                     if status != None:
-                        r = "Status: "+status
+                        r = "Status: "+status+" Application No: "+str(os.environ['APPLICATION_NO'])
                     save_data(staticFolder+'/'+newName,ods)
                     host = os.environ['HOST']
-                    self.logger.info("New File detected,"+r+" , Download it at http://"+host+'/'+newName)
+                    self.logger.info("New File detected", extra={'url':"http://"+host+'/'+newName, 'result':r})
             self.dumpContext()
         except Exception as e:
             self.logger.error("Something went wrong!!")
